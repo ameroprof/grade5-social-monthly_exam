@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الاختبار الشهري الإلكتروني والورقي - الدراسات الاجتماعية - الصف الخامس</title>
+  <title>الاختبار الشهري الإلكتروني والورقي المطور - الدراسات الاجتماعية - الصف الخامس</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +20,8 @@
             unrwa: {
               blue: '#0072bc',
               darkBlue: '#004a7c',
-              lightBlue: '#e6f2f9'
+              lightBlue: '#e6f2f9',
+              accentYellow: '#fecb00'
             },
             jordan: {
               red: '#ce1126',
@@ -40,27 +41,20 @@
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #f3f4f6;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+      min-height: 100vh;
     }
     
-    /* Print Specific Styles for Generating 4 Exam Forms */
-    @media print {
-      .no-print {
-        display: none !important;
-      }
-      .print-only {
-        display: block !important;
-      }
-      body {
-        background-color: white !important;
-        color: black !important;
-      }
-      .page-break {
-        page-break-after: always;
-      }
+    /* Child-friendly interactive card animations */
+    .option-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .print-only {
-      display: none;
+    .option-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 114, 188, 0.15);
+    }
+    .option-card:active {
+      transform: scale(0.99);
     }
     
     /* Custom Scrollbar */
@@ -74,29 +68,53 @@
       background: #0072bc;
       border-radius: 4px;
     }
+
+    /* Print Specific Styles for Generating 4 Exam Forms */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+    }
+    .print-only {
+      display: none;
+    }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 text-gray-800 flex flex-col justify-between min-h-screen">
 
   <!-- Top Navigation Header -->
-  <header class="bg-unrwa-blue text-white shadow-lg no-print sticky top-0 z-50">
+  <header class="bg-unrwa-blue text-white shadow-lg no-print sticky top-0 z-50 border-b-4 border-unrwa-accentYellow">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3 space-x-reverse">
-        <div class="bg-white p-1.5 rounded-full text-unrwa-blue font-bold shadow-md">
-          <i class="fa-solid fa-graduation-cap text-2xl px-1"></i>
+        <div class="bg-white p-2 rounded-2xl text-unrwa-blue font-bold shadow-md transform hover:rotate-6 transition">
+          <i class="fa-solid fa-graduation-cap text-2xl"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg md:text-xl leading-tight">برنامج التربية والتعليم - وكالة الغوث (UNRWA)</h1>
-          <p class="text-xs text-blue-100">الاختبار الإلكتروني والورقي الشهري - الدراسات الاجتماعية (الصف الخامس)</p>
+          <h1 class="font-extrabold text-base md:text-xl leading-tight">برنامج التربية والتعليم - وكالة الغوث (UNRWA)</h1>
+          <p class="text-xs text-blue-100 font-semibold flex items-center gap-1">
+            <span>مدرسة ذكور وادي السير الإعدادية</span>
+            <span>•</span>
+            <span class="text-yellow-300">إعداد المعلم: عامر كراجه</span>
+          </p>
         </div>
       </div>
       
       <!-- Actions / Nav Buttons -->
       <div class="flex items-center space-x-2 space-x-reverse">
-        <button onclick="switchView('student-login')" id="btn-nav-student" class="px-3 py-1.5 bg-white text-unrwa-blue rounded-lg font-bold text-sm hover:bg-blue-50 transition shadow">
+        <button onclick="switchView('student-login')" id="btn-nav-student" class="px-3.5 py-2 bg-white text-unrwa-blue rounded-xl font-bold text-xs md:text-sm hover:bg-blue-50 transition shadow">
           <i class="fa-solid fa-user-graduate ml-1"></i> بوابة الطالب
         </button>
-        <button onclick="openTeacherAuthModal()" id="btn-nav-teacher" class="px-3 py-1.5 bg-unrwa-darkBlue text-white rounded-lg font-bold text-sm hover:bg-blue-900 transition border border-blue-400 shadow">
+        <button onclick="openTeacherAuthModal()" id="btn-nav-teacher" class="px-3.5 py-2 bg-unrwa-darkBlue text-white rounded-xl font-bold text-xs md:text-sm hover:bg-blue-900 transition border border-blue-400 shadow">
           <i class="fa-solid fa-user-tie ml-1"></i> بوابة المعلم
         </button>
       </div>
@@ -106,26 +124,55 @@
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
 
     <!-- ==================== VIEW 1: STUDENT LOGIN ==================== -->
-    <section id="view-student-login" class="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 my-8">
-      <div class="bg-gradient-to-r from-unrwa-blue to-unrwa-darkBlue p-6 text-white text-center relative">
-        <div class="inline-block bg-white/20 p-4 rounded-full mb-3">
-          <i class="fa-solid fa-book-bookmark text-4xl text-white"></i>
+    <section id="view-student-login" class="max-w-lg mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 my-4 transition-all">
+      <div class="bg-gradient-to-br from-unrwa-blue via-unrwa-darkBlue to-blue-900 p-6 text-white text-center relative">
+        <div class="inline-block bg-white/20 p-4 rounded-full mb-2 shadow-inner backdrop-blur-sm">
+          <i class="fa-solid fa-book-open-reader text-4xl text-yellow-300"></i>
         </div>
-        <h2 class="text-2xl font-extrabold mb-1">اختبار الدراسات الاجتماعية</h2>
-        <p class="text-xs text-blue-100">المادة المقررة: من صفحة 23 إلى صفحة 51 (التكافل الاجتماعي + النظام السياسي)</p>
-        <span class="inline-block mt-3 bg-yellow-400 text-gray-900 font-black text-xs px-3 py-1 rounded-full shadow">الدرجة الكلية: 30 علامة</span>
+        <h2 class="text-2xl font-black mb-1">اختبار الدراسات الاجتماعية الإلكتروني</h2>
+        <p class="text-xs font-bold text-yellow-300">للصف الخامس الأساسي | الفصل الدراسي الأول</p>
+        <p class="text-xs text-blue-100 mt-2 bg-white/10 py-1.5 px-3 rounded-lg border border-white/20 inline-block">
+          المادة المقررة: الوحدة الثانية (التكافل الاجتماعي والنظام السياسي ص 23 - 51)
+        </p>
+        
+        <!-- Graphic banner illustration inspired by the concept image -->
+        <div class="mt-4 bg-white/10 p-3 rounded-2xl border border-white/20 flex items-center justify-around text-xs">
+          <div class="flex flex-col items-center">
+            <i class="fa-solid fa-hand-holding-heart text-xl text-yellow-300 mb-1"></i>
+            <span>التكافل</span>
+          </div>
+          <div class="h-6 w-px bg-white/30"></div>
+          <div class="flex flex-col items-center">
+            <i class="fa-solid fa-box-open text-xl text-green-300 mb-1"></i>
+            <span>التبرع</span>
+          </div>
+          <div class="h-6 w-px bg-white/30"></div>
+          <div class="flex flex-col items-center">
+            <i class="fa-solid fa-seedling text-xl text-emerald-300 mb-1"></i>
+            <span>المحافظة</span>
+          </div>
+        </div>
+
+        <div class="mt-3 flex justify-center items-center gap-2 text-xs bg-yellow-400 text-gray-900 font-extrabold py-1.5 px-4 rounded-full shadow-lg">
+          <i class="fa-solid fa-star"></i>
+          <span>الدرجة الكلية: 30 علامة</span>
+        </div>
       </div>
       
       <form id="student-form" onsubmit="startStudentExam(event)" class="p-6 space-y-4">
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-1">اسم الطالب الرباعي <span class="text-red-500">*</span></label>
-          <input type="text" id="student-name" required placeholder="أدخل اسمك كاملاً" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-unrwa-blue focus:outline-none">
+          <label class="block text-xs font-bold text-gray-700 mb-1.5 flex items-center">
+            <i class="fa-solid fa-user text-unrwa-blue ml-1.5"></i> اسم الطالب الرباعي <span class="text-red-500 mr-1">*</span>
+          </label>
+          <input type="text" id="student-name" required placeholder="أدخل اسمك الكامل هنا..." class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-unrwa-blue focus:ring-0 focus:outline-none font-bold text-gray-800 transition">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">الصف والواحدة <span class="text-red-500">*</span></label>
-            <select id="student-section" required class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-unrwa-blue focus:outline-none">
+            <label class="block text-xs font-bold text-gray-700 mb-1.5 flex items-center">
+              <i class="fa-solid fa-users text-unrwa-blue ml-1.5"></i> الصف والشعبة <span class="text-red-500 mr-1">*</span>
+            </label>
+            <select id="student-section" required class="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:border-unrwa-blue focus:ring-0 focus:outline-none font-bold text-gray-800 transition">
               <option value="">اختر الشعبة</option>
               <option value="الخامس ( أ )">الخامس ( أ )</option>
               <option value="الخامس ( ب )">الخامس ( ب )</option>
@@ -134,45 +181,52 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">الرقم المدرسي / القيد</label>
-            <input type="number" id="student-id" placeholder="مثال: 1042" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-unrwa-blue focus:outline-none">
+            <label class="block text-xs font-bold text-gray-700 mb-1.5 flex items-center">
+              <i class="fa-solid fa-id-card text-unrwa-blue ml-1.5"></i> الرقم المدرسي
+            </label>
+            <input type="number" id="student-id" placeholder="مثال: 1042" class="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:border-unrwa-blue focus:ring-0 focus:outline-none font-bold text-gray-800 transition">
           </div>
         </div>
 
-        <div class="bg-blue-50 border-r-4 border-unrwa-blue p-3 rounded text-xs text-gray-700">
-          <i class="fa-solid fa-circle-info text-unrwa-blue ml-1"></i> <strong>تعليمات:</strong> يتكون الاختبار من أسئلة اختيار من متعدد، وأسئلة صح وخطأ، والمطابقة، وتحليل الحالات. تأكد من إجابة جميع الأسئلة قبل التسليم.
+        <div class="bg-blue-50 border-r-4 border-unrwa-blue p-3.5 rounded-xl text-xs text-slate-700 space-y-1">
+          <p class="font-bold text-unrwa-darkBlue flex items-center">
+            <i class="fa-solid fa-circle-info ml-1 text-unrwa-blue"></i> تعليمات الطالب:
+          </p>
+          <p>• يتكون الاختبار من 4 أسئلة متنوعة تدعم التفكير والرسوم التوضيحية.</p>
+          <p>• اختر الإجابات بعناية واضغط "تسليم الاختبار" عند الانتهاء.</p>
         </div>
 
-        <button type="submit" class="w-full py-3 bg-unrwa-blue hover:bg-unrwa-darkBlue text-white font-bold rounded-xl transition shadow-lg text-base flex justify-center items-center">
-          <span>ابدأ الاختبار الآن</span>
-          <i class="fa-solid fa-arrow-left mr-2"></i>
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-unrwa-blue to-unrwa-darkBlue hover:from-blue-600 hover:to-unrwa-blue text-white font-black rounded-xl transition shadow-lg text-base flex justify-center items-center gap-2 group">
+          <span>ابدأ رحلة الاختبار</span>
+          <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
         </button>
       </form>
     </section>
 
     <!-- ==================== VIEW 2: ONLINE EXAM INTERFACE ==================== -->
     <section id="view-student-exam" class="hidden max-w-4xl mx-auto space-y-6">
-      <!-- Exam Bar Info -->
-      <div class="bg-white p-4 rounded-xl shadow border border-gray-200 flex flex-wrap justify-between items-center gap-4 sticky top-16 z-40">
+      
+      <!-- Sticky Student & Progress Header -->
+      <div class="bg-white/95 backdrop-blur p-4 rounded-2xl shadow-md border border-slate-200 flex flex-wrap justify-between items-center gap-4 sticky top-16 z-40">
         <div class="flex items-center space-x-3 space-x-reverse">
-          <div class="bg-unrwa-lightBlue p-2 rounded-lg text-unrwa-blue font-bold">
-            <i class="fa-solid fa-user-check text-xl"></i>
+          <div class="bg-unrwa-lightBlue p-2.5 rounded-xl text-unrwa-blue font-bold shadow-inner">
+            <i class="fa-solid fa-user-graduate text-2xl"></i>
           </div>
           <div>
-            <h3 id="display-student-name" class="font-bold text-gray-800 text-base">اسم الطالب</h3>
-            <p id="display-student-section" class="text-xs text-gray-500">الصف الخامس</p>
+            <h3 id="display-student-name" class="font-black text-gray-800 text-base">اسم الطالب</h3>
+            <p id="display-student-section" class="text-xs text-gray-500 font-bold">الصف الخامس</p>
           </div>
         </div>
 
-        <!-- Timer & Progress -->
-        <div class="flex items-center space-x-6 space-x-reverse">
-          <div class="text-center">
-            <span class="text-xs text-gray-500 block">الزمن المتبقي</span>
-            <div id="exam-timer" class="text-lg font-black text-red-600 bg-red-50 px-3 py-0.5 rounded-md border border-red-200">25:00</div>
+        <!-- Timer & Score Info -->
+        <div class="flex items-center space-x-5 space-x-reverse">
+          <div class="text-center bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl">
+            <span class="text-[10px] text-red-500 font-bold block">الوقت المتبقي</span>
+            <div id="exam-timer" class="text-lg font-black text-red-600 leading-none">25:00</div>
           </div>
-          <div class="text-center">
-            <span class="text-xs text-gray-500 block">علامة الامتحان</span>
-            <span class="text-lg font-black text-unrwa-blue">30 علامة</span>
+          <div class="text-center bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl">
+            <span class="text-[10px] text-unrwa-blue font-bold block">العلامة الكلية</span>
+            <span class="text-lg font-black text-unrwa-darkBlue leading-none">30 علامة</span>
           </div>
         </div>
       </div>
@@ -181,299 +235,398 @@
       <form id="online-exam-form" onsubmit="submitStudentExam(event)" class="space-y-6">
         
         <!-- SECTION 1: Multiple Choice -->
-        <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 space-y-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <div class="border-b pb-3 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-unrwa-darkBlue flex items-center">
-              <span class="bg-unrwa-blue text-white w-7 h-7 rounded-full inline-flex justify-center items-center text-sm ml-2">1</span>
-              السؤال الأول: الاختيار من متعدد (10 علامات - علامتان لكل فقرة)
+            <h3 class="text-lg font-black text-unrwa-darkBlue flex items-center">
+              <span class="bg-unrwa-blue text-white w-8 h-8 rounded-full inline-flex justify-center items-center text-sm ml-2.5 shadow">1</span>
+              السؤال الأول: اختر الإجابة الصحيحة (10 علامات - علامتان لكل فقرة)
             </h3>
-            <span class="text-xs font-semibold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">5 أسئلة</span>
+            <span class="text-xs font-extrabold bg-blue-50 text-unrwa-blue px-3 py-1 rounded-full border border-blue-100">5 فقرات</span>
           </div>
 
           <!-- MC Q1 -->
-          <div class="q-block border-b border-gray-100 pb-4">
-            <p class="font-semibold text-gray-800 mb-3">1. ما المقصود بـ "التكافل الاجتماعي" كما ورد في درس التكافل المجتمعي (ص 23)؟</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q1" value="A" required class="ml-2"> أ) تبادل المنتجات التجارية بين الدول
+          <div class="q-block border-b border-slate-100 pb-5">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+              <p class="font-bold text-gray-800 text-base flex-1 leading-relaxed">
+                1. المفهوم الاجتماعي الذي يعني: <span class="text-unrwa-blue">"تعاون أفراد المجتمع بحيث يساعد الغني الفقير ويعطف الكبير على الصغير"</span> هو:
+              </p>
+              
+              <!-- Custom SVG Graphic Banner: Social Solidarity (Inspired by Images) -->
+              <div class="bg-gradient-to-r from-blue-50 to-sky-100 p-3 rounded-2xl border border-blue-200 flex items-center gap-3 shrink-0 self-center md:self-auto shadow-sm">
+                <svg class="w-16 h-16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="50" cy="50" r="45" fill="#E6F2F9" stroke="#0072BC" stroke-width="2"/>
+                  <!-- Elder & Child / Solidarity Motif -->
+                  <circle cx="35" cy="40" r="10" fill="#D4AF37"/>
+                  <circle cx="65" cy="45" r="8" fill="#CE1126"/>
+                  <path d="M20 75C20 60 30 52 45 52C60 52 80 60 80 75" fill="#0072BC"/>
+                  <path d="M30 65C35 55 45 55 50 65" stroke="#007A3D" stroke-width="3" stroke-linecap="round"/>
+                  <!-- Connecting Link Ring -->
+                  <rect x="42" y="25" width="16" height="24" rx="8" stroke="#D4AF37" stroke-width="3" fill="none"/>
+                </svg>
+                <div class="text-right">
+                  <span class="text-[11px] font-black text-unrwa-darkBlue block">مفهوم التكافل</span>
+                  <span class="text-[10px] text-slate-500 block">الأسرة والحي والمجتمع</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q1" value="A" required class="ml-2.5 w-4 h-4 text-unrwa-blue"> أ) التنافس التجاري
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q1" value="B" class="ml-2"> ب) تعاون أفراد المجتمع بحيث يساعد الغني الفقير ويعطف الكبير على الصغير
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q1" value="B" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ب) التكافل الاجتماعي
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q1" value="C" class="ml-2"> ج) المشاركة في الانتخابات النيابية فقط
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q1" value="C" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ج) الاقتراع النيابي
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q1" value="D" class="ml-2"> د) إصدار القوانين التشريعية في الدولة
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q1" value="D" class="ml-2.5 w-4 h-4 text-unrwa-blue"> د) إصدار الاحكام القضائية
               </label>
             </div>
           </div>
 
           <!-- MC Q2 -->
-          <div class="q-block border-b border-gray-100 pb-4">
-            <p class="font-semibold text-gray-800 mb-3">2. من هو رأس الدولة الأردنية والقائد الأعلى للقوات المسلحة وفقاً للدستور (ص 34)؟</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q2" value="A" required class="ml-2"> أ) رئيس مجلس النواب
+          <div class="q-block border-b border-slate-100 pb-5">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+              <p class="font-bold text-gray-800 text-base flex-1 leading-relaxed">
+                2. من صور التكافل الاجتماعي <span class="text-emerald-700">داخل المدرسة</span> التي تمثل تقديم المساعدة كما هو موضح في الكتب المدرسية (ص 20-24):
+              </p>
+              
+              <!-- Custom SVG Graphic Banner: School Donation & Helping Hands -->
+              <div class="bg-gradient-to-r from-emerald-50 to-green-100 p-3 rounded-2xl border border-emerald-200 flex items-center gap-3 shrink-0 self-center md:self-auto shadow-sm">
+                <svg class="w-16 h-16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="15" y="30" width="70" height="50" rx="8" fill="#DCFCE7" stroke="#007A3D" stroke-width="2"/>
+                  <!-- Backpack / Clothes Donation Box -->
+                  <path d="M30 45H70V70H30V45Z" fill="#0072BC" rx="4"/>
+                  <path d="M40 35H60V45H40V35Z" fill="#D4AF37"/>
+                  <circle cx="50" cy="58" r="4" fill="#FFF"/>
+                </svg>
+                <div class="text-right">
+                  <span class="text-[11px] font-black text-emerald-800 block">التبرع والمساعدة</span>
+                  <span class="text-[10px] text-slate-500 block">ملابس وحقائب وقرطاسية</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q2" value="A" required class="ml-2.5 w-4 h-4 text-unrwa-blue"> أ) التبرع بالحقائب والملابس والقرطاسية للطلبة المحتاجين
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q2" value="B" class="ml-2"> ب) رئيس الوزراء
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q2" value="B" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ب) بيع المستلزمات في السوق التجاري
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q2" value="C" class="ml-2"> ج) جلالة الملك
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q2" value="C" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ج) تأجير الملاعب الرياضية
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q2" value="D" class="ml-2"> د) رئيس المجلس القضائي
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q2" value="D" class="ml-2.5 w-4 h-4 text-unrwa-blue"> د) الامتناع عن الأنشطة اللاصفية
               </label>
             </div>
           </div>
 
           <!-- MC Q3 -->
-          <div class="q-block border-b border-gray-100 pb-4">
-            <p class="font-semibold text-gray-800 mb-3">3. أطلقت وزارة التربية والتعليم بالشركاة مع وزارة البيئة مبادرة تهدف لبيئة مدرسية نظيفة وآمنة عام 2023م (ص 20) وهي:</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q3" value="A" required class="ml-2"> أ) مبادرة "حقوقي ورعايتي"
+          <div class="q-block border-b border-slate-100 pb-5">
+            <p class="font-bold text-gray-800 text-base mb-3 leading-relaxed">
+              3. رأس الدولة الأردنية والقائد الأعلى للقوات المسلحة وفقاً للدستور الأردني (ص 34) هو:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q3" value="A" required class="ml-2.5 w-4 h-4 text-unrwa-blue"> أ) رئيس مجلس النواب
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q3" value="B" class="ml-2"> ب) مبادرة "لمدرستي أنتمي"
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q3" value="B" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ب) رئيس الوزراء
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q3" value="C" class="ml-2"> ج) مبادرة "الأردن أمانة"
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q3" value="C" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ج) جلالة الملك
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q3" value="D" class="ml-2"> د) مبادرة "بيئتي الخضراء"
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q3" value="D" class="ml-2.5 w-4 h-4 text-unrwa-blue"> د) رئيس المجلس القضائي
               </label>
             </div>
           </div>
 
           <!-- MC Q4 -->
-          <div class="q-block border-b border-gray-100 pb-4">
-            <p class="font-semibold text-gray-800 mb-3">4. تشمل "السلطة التشريعية" في المملكة الأردنية الهاشمية (مجلس الأمة) المكون من (ص 39):</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q4" value="A" required class="ml-2"> أ) مجلس الوزراء والمحاكم
+          <div class="q-block border-b border-slate-100 pb-5">
+            <p class="font-bold text-gray-800 text-base mb-3 leading-relaxed">
+              4. المبادرة التي أطلقتها وزارة التربية والتعليم للارتقاء بنظافة البيئة المدرسية وسلوك الطلبة (عام 2023م ص 20) هي:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q4" value="A" required class="ml-2.5 w-4 h-4 text-unrwa-blue"> أ) مبادرة "حقوقي"
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q4" value="B" class="ml-2"> ب) مجالس البلدية والنقابات
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q4" value="B" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ب) مبادرة "لمدرستي أنتمي"
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q4" value="C" class="ml-2"> ج) مجالس الأعيان ومجلس النواب
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q4" value="C" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ج) مبادرة "مدرستي أجمل"
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q4" value="D" class="ml-2"> د) القوات المسلحة والأمن العام
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q4" value="D" class="ml-2.5 w-4 h-4 text-unrwa-blue"> د) مبادرة "الأردن أولاً"
               </label>
             </div>
           </div>
 
           <!-- MC Q5 -->
           <div class="q-block">
-            <p class="font-semibold text-gray-800 mb-3">5. يتولى إعطاء الدستور حق المصادقة على القوانين وإصدارها بعد إقرارها من مجلس الأمة (ص 34-35):</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q5" value="A" required class="ml-2"> أ) رئيس مجلس الأعيان
+            <p class="font-bold text-gray-800 text-base mb-3 leading-relaxed">
+              5. تشمل <span class="text-amber-700 font-extrabold">السلطة التشريعية</span> في المملكة الأردنية الهاشمية (مجلس الأمة المكون من ص 39):
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q5" value="A" required class="ml-2.5 w-4 h-4 text-unrwa-blue"> أ) مجلس الوزراء والمحاكم
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q5" value="B" class="ml-2"> ب) الملك
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q5" value="B" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ب) مجالس البلدية والنقابات
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q5" value="C" class="ml-2"> ج) وزير العدل
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q5" value="C" class="ml-2.5 w-4 h-4 text-unrwa-blue"> ج) مجلس الأعيان ومجلس النواب
               </label>
-              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition">
-                <input type="radio" name="mc_q5" value="D" class="ml-2"> د) رئيس المحكمة الاتحادية
+              <label class="option-card flex items-center p-3.5 border-2 rounded-xl cursor-pointer hover:border-unrwa-blue bg-slate-50 hover:bg-blue-50/50 transition">
+                <input type="radio" name="mc_q5" value="D" class="ml-2.5 w-4 h-4 text-unrwa-blue"> د) القوات المسلحة والأمن العام
               </label>
             </div>
           </div>
         </div>
 
         <!-- SECTION 2: True/False Questions -->
-        <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 space-y-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <div class="border-b pb-3 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-unrwa-darkBlue flex items-center">
-              <span class="bg-unrwa-blue text-white w-7 h-7 rounded-full inline-flex justify-center items-center text-sm ml-2">2</span>
+            <h3 class="text-lg font-black text-unrwa-darkBlue flex items-center">
+              <span class="bg-unrwa-blue text-white w-8 h-8 rounded-full inline-flex justify-center items-center text-sm ml-2.5 shadow">2</span>
               السؤال الثاني: ضع إشارة (✓) أمام العبارة الصحيحة وإشارة (✗) أمام العبارة الخاطئة (6 علامات)
             </h3>
-            <span class="text-xs font-semibold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">4 أسئلة</span>
+            <span class="text-xs font-extrabold bg-blue-50 text-unrwa-blue px-3 py-1 rounded-full border border-blue-100">4 عبارات</span>
           </div>
 
           <!-- TF Q1 -->
-          <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-3">
-            <p class="text-sm font-semibold text-gray-800">1. يبدأ التكافل الاجتماعي أولاً من الأسرة من خلال إنفاق الزوجين ورعاية الأولاد وتأمين حاجاتهم (ص 23-24).</p>
-            <div class="flex space-x-4 space-x-reverse text-sm">
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-green-50">
-                <input type="radio" name="tf_q1" value="true" required class="ml-1"> صحيح (✓)
+          <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+            <p class="text-sm font-bold text-gray-800 flex-1">1. يبدأ التكافل الاجتماعي أولاً من الأسرة من خلال إنفاق الوالدين ورعاية الأولاد وتأمين حاجاتهم (ص 23-24).</p>
+            <div class="flex space-x-3 space-x-reverse text-sm shrink-0">
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-green-50 transition">
+                <input type="radio" name="tf_q1" value="true" required class="ml-1.5 text-green-600"> صحيح (✓)
               </label>
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-red-50">
-                <input type="radio" name="tf_q1" value="false" class="ml-1"> خطأ (✗)
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-red-50 transition">
+                <input type="radio" name="tf_q1" value="false" class="ml-1.5 text-red-600"> خطأ (✗)
               </label>
             </div>
           </div>
 
           <!-- TF Q2 -->
-          <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-3">
-            <p class="text-sm font-semibold text-gray-800">2. السلطة التنفيذية هي التشكيلة الدستورية المناط بها إقامة العدل وتعيين القضاة وإصدار الأحكام (ص 46).</p>
-            <div class="flex space-x-4 space-x-reverse text-sm">
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-green-50">
-                <input type="radio" name="tf_q2" value="true" required class="ml-1"> صحيح (✓)
+          <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+            <p class="text-sm font-bold text-gray-800 flex-1">2. السلطة التنفيذية هي التشكيلة الدستورية المناط بها إقامة العدل وتعيين القضاة وإصدار الأحكام (ص 46).</p>
+            <div class="flex space-x-3 space-x-reverse text-sm shrink-0">
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-green-50 transition">
+                <input type="radio" name="tf_q2" value="true" required class="ml-1.5 text-green-600"> صحيح (✓)
               </label>
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-red-50">
-                <input type="radio" name="tf_q2" value="false" class="ml-1"> خطأ (✗)
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-red-50 transition">
+                <input type="radio" name="tf_q2" value="false" class="ml-1.5 text-red-600"> خطأ (✗)
               </label>
             </div>
           </div>
 
           <!-- TF Q3 -->
-          <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-3">
-            <p class="text-sm font-semibold text-gray-800">3. يُعد العمل التطوعي عبارة عن جهود تُبذل لخدمة المجتمع وتطويره بدون مقابل مادي (ص 17).</p>
-            <div class="flex space-x-4 space-x-reverse text-sm">
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-green-50">
-                <input type="radio" name="tf_q3" value="true" required class="ml-1"> صحيح (✓)
+          <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+            <p class="text-sm font-bold text-gray-800 flex-1">3. يُعد العمل التطوعي عبارة عن جهود تُبذل لخدمة المجتمع وتطويره بدون مقابل مادي (ص 17).</p>
+            <div class="flex space-x-3 space-x-reverse text-sm shrink-0">
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-green-50 transition">
+                <input type="radio" name="tf_q3" value="true" required class="ml-1.5 text-green-600"> صحيح (✓)
               </label>
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-red-50">
-                <input type="radio" name="tf_q3" value="false" class="ml-1"> خطأ (✗)
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-red-50 transition">
+                <input type="radio" name="tf_q3" value="false" class="ml-1.5 text-red-600"> خطأ (✗)
               </label>
             </div>
           </div>
 
           <!-- TF Q4 -->
           <div class="q-block flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <p class="text-sm font-semibold text-gray-800">4. يعين الملك رئيس الوزراء والوزراء ويقيلهم ويسحب استقالتهم بحسب أحكام الدستور الأردني (ص 34).</p>
-            <div class="flex space-x-4 space-x-reverse text-sm">
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-green-50">
-                <input type="radio" name="tf_q4" value="true" required class="ml-1"> صحيح (✓)
+            <p class="text-sm font-bold text-gray-800 flex-1">4. يعين جلالة الملك رئيس الوزراء والوزراء ويقبل استقالتهم بحسب أحكام الدستور الأردني (ص 34).</p>
+            <div class="flex space-x-3 space-x-reverse text-sm shrink-0">
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-green-50 transition">
+                <input type="radio" name="tf_q4" value="true" required class="ml-1.5 text-green-600"> صحيح (✓)
               </label>
-              <label class="flex items-center px-4 py-2 border rounded-lg cursor-pointer hover:bg-red-50">
-                <input type="radio" name="tf_q4" value="false" class="ml-1"> خطأ (✗)
+              <label class="flex items-center px-4 py-2 border-2 rounded-xl cursor-pointer hover:bg-red-50 transition">
+                <input type="radio" name="tf_q4" value="false" class="ml-1.5 text-red-600"> خطأ (✗)
               </label>
             </div>
           </div>
         </div>
 
         <!-- SECTION 3: Matching / Classification Questions -->
-        <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 space-y-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <div class="border-b pb-3 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-unrwa-darkBlue flex items-center">
-              <span class="bg-unrwa-blue text-white w-7 h-7 rounded-full inline-flex justify-center items-center text-sm ml-2">3</span>
-              السؤال الثالث: صِل المفهوم/السلطة في العمود (أ) بما يناسب دورها الدستوري أو الاجتماعي في العمود (ب) (8 علامات)
+            <h3 class="text-lg font-black text-unrwa-darkBlue flex items-center">
+              <span class="bg-unrwa-blue text-white w-8 h-8 rounded-full inline-flex justify-center items-center text-sm ml-2.5 shadow">3</span>
+              السؤال الثالث: صِل المفهوم/السلطة برسالته ودوره الدستوري والمجتمعي (8 علامات)
             </h3>
-            <span class="text-xs font-semibold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">4 مفاهيم</span>
+            <span class="text-xs font-extrabold bg-blue-50 text-unrwa-blue px-3 py-1 rounded-full border border-blue-100">4 مفاهيم</span>
           </div>
 
-          <div class="space-y-4 text-sm">
+          <!-- Visual Educational Diagram Box (Constitutional Powers & Social Roles) -->
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 my-2 shadow-inner">
+            <h4 class="text-xs font-black text-center text-slate-700 mb-3 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-sitemap text-unrwa-blue"></i>
+              <span>مخطط تفاعلي: السلطات ومجالات التكافل والتطوع (الكتاب ص 23 - 46)</span>
+            </h4>
+            
+            <div class="flex justify-center">
+              <svg class="w-full max-w-xl h-36" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- King Badge -->
+                <rect x="175" y="5" width="150" height="32" rx="10" fill="#D4AF37" stroke="#B45309" stroke-width="1.5"/>
+                <text x="250" y="25" text-anchor="middle" fill="#000" font-family="Cairo" font-size="11" font-weight="bold">👑 جلالة الملك (رأس الدولة)</text>
+                
+                <!-- Dotted Connection Lines -->
+                <path d="M250 37V52 M90 52H410 M90 52V62 M250 52V62 M410 52V62" stroke="#0072BC" stroke-width="2" stroke-dasharray="3 3"/>
+                
+                <!-- Legislative -->
+                <rect x="15" y="62" width="140" height="48" rx="8" fill="#E6F2F9" stroke="#0072BC" stroke-width="1.5"/>
+                <text x="85" y="82" text-anchor="middle" fill="#004A7C" font-family="Cairo" font-size="11" font-weight="bold">السلطة التشريعية</text>
+                <text x="85" y="97" text-anchor="middle" fill="#4B5563" font-family="Cairo" font-size="9">(أعيان ونواب)</text>
+                
+                <!-- Executive -->
+                <rect x="180" y="62" width="140" height="48" rx="8" fill="#DCFCE7" stroke="#007A3D" stroke-width="1.5"/>
+                <text x="250" y="82" text-anchor="middle" fill="#007A3D" font-family="Cairo" font-size="11" font-weight="bold">السلطة التنفيذية</text>
+                <text x="250" y="97" text-anchor="middle" fill="#4B5563" font-family="Cairo" font-size="9">(مجلس الوزراء)</text>
+                
+                <!-- Judicial -->
+                <rect x="345" y="62" width="140" height="48" rx="8" fill="#FEF3C7" stroke="#D4AF37" stroke-width="1.5"/>
+                <text x="415" y="82" text-anchor="middle" fill="#92400E" font-family="Cairo" font-size="11" font-weight="bold">السلطة القضائية</text>
+                <text x="415" y="97" text-anchor="middle" fill="#4B5563" font-family="Cairo" font-size="9">(المحاكم المستقلة)</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="space-y-3.5 text-sm">
             <!-- Match 1 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-gray-50 p-3 rounded-lg border">
-              <div class="font-bold text-gray-700">1. السلطة التشريعية (مجلس الأمة):</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <div class="font-bold text-gray-800 flex items-center">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-unrwa-blue text-xs flex justify-center items-center ml-2 font-black">1</span>
+                السلطة التشريعية (مجلس الأمة):
+              </div>
               <div>
-                <select name="match_q1" required class="w-full p-2 border rounded bg-white font-semibold text-gray-700">
+                <select name="match_q1" required class="w-full p-2.5 border-2 border-gray-200 rounded-xl bg-white font-bold text-gray-700 focus:border-unrwa-blue focus:outline-none">
                   <option value="">-- اختر الوظيفة المناسبة --</option>
-                  <option value="A">إدارة شؤون الدولة وإدارة مؤسساتها وإعداد الموازنة (مجلس الوزراء)</option>
-                  <option value="B">تشريع القوانين واقتراحها ومراقبة عمل الحكومة</option>
-                  <option value="C">تطبيق القوانين وإقامة العدل بين المتقاضين (المحاكم)</option>
-                  <option value="D">رعاية حقوق الجار وتأمين العون للمحتاجين بالحي</option>
+                  <option value="A">إدارة شؤون الدولة وإعداد الموازنة (مجلس الوزراء)</option>
+                  <option value="B">تشريع القوانين واقتراحها ومراقبة أداء الحكومة</option>
+                  <option value="C">تطبيق القوانين وإقامة العدل بين الناس (المحاكم)</option>
+                  <option value="D">مساعدة العائلات المحتاجة والتبرع بالحقائب والملابس</option>
                 </select>
               </div>
             </div>
 
             <!-- Match 2 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-gray-50 p-3 rounded-lg border">
-              <div class="font-bold text-gray-700">2. السلطة التنفيذية (مجلس الوزراء):</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <div class="font-bold text-gray-800 flex items-center">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-unrwa-blue text-xs flex justify-center items-center ml-2 font-black">2</span>
+                السلطة التنفيذية (الحكومة ومجلس الوزراء):
+              </div>
               <div>
-                <select name="match_q2" required class="w-full p-2 border rounded bg-white font-semibold text-gray-700">
+                <select name="match_q2" required class="w-full p-2.5 border-2 border-gray-200 rounded-xl bg-white font-bold text-gray-700 focus:border-unrwa-blue focus:outline-none">
                   <option value="">-- اختر الوظيفة المناسبة --</option>
-                  <option value="A">إدارة شؤون الدولة وإدارة مؤسساتها وإعداد الموازنة</option>
-                  <option value="B">تشريع القوانين واقتراحها ومراقبة عمل الحكومة</option>
-                  <option value="C">تطبيق القوانين وإقامة العدل بين المتقاضين (المحاكم)</option>
-                  <option value="D">رعاية حقوق الجار وتأمين العون للمحتاجين بالحي</option>
+                  <option value="A">إدارة شؤون الدولة الداخلية والخارجية وإعداد الموازنة العامة</option>
+                  <option value="B">تشريع القوانين واقتراحها ومراقبة أداء الحكومة</option>
+                  <option value="C">تطبيق القوانين وإقامة العدل بين الناس (المحاكم)</option>
+                  <option value="D">مساعدة العائلات المحتاجة والتبرع بالحقائب والملابس</option>
                 </select>
               </div>
             </div>
 
             <!-- Match 3 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-gray-50 p-3 rounded-lg border">
-              <div class="font-bold text-gray-700">3. السلطة القضائية (المحاكم المستقلة):</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <div class="font-bold text-gray-800 flex items-center">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-unrwa-blue text-xs flex justify-center items-center ml-2 font-black">3</span>
+                السلطة القضائية (المحاكم المستقلة):
+              </div>
               <div>
-                <select name="match_q3" required class="w-full p-2 border rounded bg-white font-semibold text-gray-700">
+                <select name="match_q3" required class="w-full p-2.5 border-2 border-gray-200 rounded-xl bg-white font-bold text-gray-700 focus:border-unrwa-blue focus:outline-none">
                   <option value="">-- اختر الوظيفة المناسبة --</option>
-                  <option value="A">إدارة شؤون الدولة وإدارة مؤسساتها وإعداد الموازنة</option>
-                  <option value="B">تشريع القوانين واقتراحها ومراقبة عمل الحكومة</option>
+                  <option value="A">إدارة شؤون الدولة وإعداد الموازنة (مجلس الوزراء)</option>
+                  <option value="B">تشريع القوانين واقتراحها ومراقبة أداء الحكومة</option>
                   <option value="C">تطبيق القوانين وإقامة العدل وحماية الحقوق والحرية</option>
-                  <option value="D">رعاية حقوق الجار وتأمين العون للمحتاجين بالحي</option>
+                  <option value="D">مساعدة العائلات المحتاجة والتبرع بالحقائب والملابس</option>
                 </select>
               </div>
             </div>
 
             <!-- Match 4 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-gray-50 p-3 rounded-lg border">
-              <div class="font-bold text-gray-700">4. التكافل الاجتماعي في الحي:</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <div class="font-bold text-gray-800 flex items-center">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-unrwa-blue text-xs flex justify-center items-center ml-2 font-black">4</span>
+                مظاهر التكافل الاجتماعي في المدرسة والحي:
+              </div>
               <div>
-                <select name="match_q4" required class="w-full p-2 border rounded bg-white font-semibold text-gray-700">
+                <select name="match_q4" required class="w-full p-2.5 border-2 border-gray-200 rounded-xl bg-white font-bold text-gray-700 focus:border-unrwa-blue focus:outline-none">
                   <option value="">-- اختر الوظيفة المناسبة --</option>
-                  <option value="A">إدارة شؤون الدولة وإدارة مؤسساتها وإعداد الموازنة</option>
-                  <option value="B">تشريع القوانين واقتراحها ومراقبة عمل الحكومة</option>
-                  <option value="C">تطبيق القوانين وإقامة العدل بين المتقاضين (المحاكم)</option>
-                  <option value="D">مساعدة العائلات المحتاجة وتنظيف الحي ورعاية كبار السن</option>
+                  <option value="A">إدارة شؤون الدولة وإعداد الموازنة (مجلس الوزراء)</option>
+                  <option value="B">تشريع القوانين واقتراحها ومراقبة أداء الحكومة</option>
+                  <option value="C">تطبيق القوانين وإقامة العدل بين الناس (المحاكم)</option>
+                  <option value="D">التبرع بالمستلزمات، تنظيف المدرسة، وتفقد الجيران المحتاجين</option>
                 </select>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- SECTION 4: Scenario Analysis & Practical Case Studies -->
-        <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 space-y-6">
+        <!-- SECTION 4: Applied Scenarios & Interactive Stories -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <div class="border-b pb-3 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-unrwa-darkBlue flex items-center">
-              <span class="bg-unrwa-blue text-white w-7 h-7 rounded-full inline-flex justify-center items-center text-sm ml-2">4</span>
-              السؤال الرابع: تحليل المواقف والأنشطة التطبيقية (6 علامات - 3 علامات لكل فرع)
+            <h3 class="text-lg font-black text-unrwa-darkBlue flex items-center">
+              <span class="bg-unrwa-blue text-white w-8 h-8 rounded-full inline-flex justify-center items-center text-sm ml-2.5 shadow">4</span>
+              السؤال الرابع: تحليل المواقف الحياتية والتطبيقية (6 علامات - 3 علامات لكل موقف)
             </h3>
-            <span class="text-xs font-semibold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">حالتان دراسيتان</span>
+            <span class="text-xs font-extrabold bg-blue-50 text-unrwa-blue px-3 py-1 rounded-full border border-blue-100">موقفان تطبيقيان</span>
           </div>
 
           <!-- Scenario 1 -->
-          <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 space-y-3">
-            <div class="flex items-start space-x-3 space-x-reverse">
-              <span class="bg-unrwa-blue text-white p-2 rounded-lg text-lg"><i class="fa-solid fa-hands-holding-child"></i></span>
-              <div>
-                <h4 class="font-bold text-gray-800 text-sm">الموقف الأول (قصة الطالبة فرح - صفحة 24 من الكتاب):</h4>
-                <p class="text-xs text-gray-600 leading-relaxed mt-1">
-                  "عندما علم طلبة الصف الخامس أن والد زميلتهم (فرح) مرض ويحتاج للمساعدة، أخبروا أولياء أمورهم. فتعاونت مجموعة لنقله للمستشفى، ومجموعة لجمع التبرعات لتلبية حاجات الأسرة، ومجموعة ثالثة لزيارته والاطمئنان عليه دورياً."
-                </p>
+          <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-200 space-y-3">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start space-x-3 space-x-reverse flex-1">
+                <span class="bg-unrwa-blue text-white p-2.5 rounded-xl text-lg shrink-0 shadow"><i class="fa-solid fa-hands-holding-child"></i></span>
+                <div>
+                  <h4 class="font-extrabold text-gray-800 text-sm">الموقف الأول: (قصة مساعدة زميلتكم فرح - ص 24 من الكتاب):</h4>
+                  <p class="text-xs text-gray-700 leading-relaxed mt-1.5 font-semibold">
+                    "علم طلبة الصف الخامس بمرض والد زميلتهم فرح وحاجته للمساعدة، فتعاونت مجموعة لنقله للمستشفى، ومجموعة لجمع التبرعات لتلبية حاجات أسرته، ومجموعة ثالثة لزيارته والاطمئنان عليه."
+                  </p>
+                </div>
               </div>
             </div>
-            <p class="font-bold text-sm text-gray-800 pt-2">حدد نوع مظاهر التكافل الاجتماعي والتضامن المنفذة في موقف زملاء فرح:</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-              <label class="p-3 bg-white border rounded-lg cursor-pointer flex items-center hover:bg-blue-100">
-                <input type="radio" name="case_q1" value="A" required class="ml-2"> أ) تكافل مادي ونفسي واجتماعي متكامل
+
+            <p class="font-bold text-xs text-gray-800 pt-1">حدد المظهر الرئيسي للتكافل الاجتماعي والتضامن المنفذ في موقف الزملاء:</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+              <label class="p-3 bg-white border-2 rounded-xl cursor-pointer flex items-center hover:border-unrwa-blue transition font-bold text-gray-700">
+                <input type="radio" name="case_q1" value="A" required class="ml-2 w-4 h-4 text-unrwa-blue"> أ) تكافل مادي ونفسي واجتماعي متكامل
               </label>
-              <label class="p-3 bg-white border rounded-lg cursor-pointer flex items-center hover:bg-blue-100">
-                <input type="radio" name="case_q1" value="B" class="ml-2"> ب) مشاركة غير مباشرة واقتراع نيابي
+              <label class="p-3 bg-white border-2 rounded-xl cursor-pointer flex items-center hover:border-unrwa-blue transition font-bold text-gray-700">
+                <input type="radio" name="case_q1" value="B" class="ml-2 w-4 h-4 text-unrwa-blue"> ب) مشاركة واقتراع نيابي فقط
               </label>
-              <label class="p-3 bg-white border rounded-lg cursor-pointer flex items-center hover:bg-blue-100">
-                <input type="radio" name="case_q1" value="C" class="ml-2"> ج) مناقشة موازنة الدولة وتعيين وزراء
+              <label class="p-3 bg-white border-2 rounded-xl cursor-pointer flex items-center hover:border-unrwa-blue transition font-bold text-gray-700">
+                <input type="radio" name="case_q1" value="C" class="ml-2 w-4 h-4 text-unrwa-blue"> ج) مناقشة الموازنة وتعيين القضاة
               </label>
             </div>
           </div>
 
           <!-- Scenario 2 -->
-          <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-3">
+          <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 space-y-3">
             <div class="flex items-start space-x-3 space-x-reverse">
-              <span class="bg-amber-600 text-white p-2 rounded-lg text-lg"><i class="fa-solid fa-crown"></i></span>
+              <span class="bg-amber-600 text-white p-2.5 rounded-xl text-lg shrink-0 shadow"><i class="fa-solid fa-crown"></i></span>
               <div>
-                <h4 class="font-bold text-gray-800 text-sm">الموقف الثاني (صلاحيات الملك الدستورية - صفحة 34):</h4>
-                <p class="text-xs text-gray-600 leading-relaxed mt-1">
-                  "أقر مجلس الأمة قانوناً جديداً لحماية البيئة المدرسية، ولتصبح هذا مشروع القانون نافذاً ومرعياً عملياً في المملكة، يتطلب خطوة دستورية نهائية سامية."
+                <h4 class="font-extrabold text-gray-800 text-sm">الموقف الثاني: (صلاحيات جلالة الملك الدستورية - ص 34):</h4>
+                <p class="text-xs text-gray-700 leading-relaxed mt-1.5 font-semibold">
+                  "أقر مجلس الأمة مشروع قانون جديد يهدف لحماية البيئة المدرسية، ولتكتمل الخطوات الدستورية وتصبح هذه القوانين نافذة في المملكة الأردنية الهاشمية."
                 </p>
               </div>
             </div>
-            <p class="font-bold text-sm text-gray-800 pt-2">ما هي الخطوة الدستورية الصحيحة طبقاً لصلاحيات جلالة الملك الدستورية؟</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-              <label class="p-3 bg-white border rounded-lg cursor-pointer flex items-center hover:bg-amber-100">
-                <input type="radio" name="case_q2" value="A" required class="ml-2"> أ) مصادقة الملك على القانون وإصداره بالأمر الملكي
+
+            <p class="font-bold text-xs text-gray-800 pt-1">ما الخطوة الدستورية النهائية السامية المطلوبة سريان القانون؟</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+              <label class="p-3 bg-white border-2 rounded-xl cursor-pointer flex items-center hover:border-amber-500 transition font-bold text-gray-700">
+                <input type="radio" name="case_q2" value="A" required class="ml-2 w-4 h-4 text-amber-600"> أ) مصادقة جلالة الملك على القانون وإصداره
               </label>
-              <label class="p-3 bg-white border rounded-lg cursor-pointer flex items-center hover:bg-amber-100">
-                <input type="radio" name="case_q2" value="B" class="ml-2"> ب) تصويت المواطنين عبر منصات التواصل
+              <label class="p-3 bg-white border-2 rounded-xl cursor-pointer flex items-center hover:border-amber-500 transition font-bold text-gray-700">
+                <input type="radio" name="case_q2" value="B" class="ml-2 w-4 h-4 text-amber-600"> ب) تصويت المواطنين في وسائل التواصل
               </label>
-              <label class="p-3 bg-white border rounded-lg cursor-pointer flex items-center hover:bg-amber-100">
-                <input type="radio" name="case_q2" value="C" class="ml-2"> ج) إلغاء القضاء للنص دون الرجوع لأحد
+              <label class="p-3 bg-white border-2 rounded-xl cursor-pointer flex items-center hover:border-amber-500 transition font-bold text-gray-700">
+                <input type="radio" name="case_q2" value="C" class="ml-2 w-4 h-4 text-amber-600"> ج) إلغاء القضاء للنص دون توقيع
               </label>
             </div>
           </div>
@@ -481,52 +634,54 @@
         </div>
 
         <!-- Submit Button -->
-        <div class="text-center pt-4">
-          <button type="submit" class="w-full md:w-2/3 py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-xl text-lg shadow-xl transition flex justify-center items-center mx-auto">
-            <i class="fa-solid fa-paper-plane ml-2"></i> تسليم الإجابات وإنهاء الاختبار
+        <div class="text-center pt-2">
+          <button type="submit" class="w-full md:w-2/3 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-lg shadow-xl transition flex justify-center items-center mx-auto gap-2 transform hover:-translate-y-0.5">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>تسليم الإجابات وإنهاء الاختبار</span>
           </button>
         </div>
       </form>
     </section>
 
     <!-- ==================== VIEW 3: STUDENT RESULT / REPORT CARD ==================== -->
-    <section id="view-student-result" class="hidden max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 my-6">
-      <div id="result-header" class="p-6 text-center text-white bg-green-600">
+    <section id="view-student-result" class="hidden max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 my-6">
+      <div id="result-header" class="p-6 text-center text-white bg-emerald-600">
         <i class="fa-solid fa-circle-check text-5xl mb-2"></i>
         <h2 class="text-2xl font-black">تم تسليم الاختبار بنجاح!</h2>
-        <p class="text-sm opacity-90">تقرير النتيجة الفورية للتلميذ</p>
+        <p class="text-xs opacity-90 font-bold">تقرير التقييم الرقمي الفوري للتلميذ</p>
       </div>
 
       <div class="p-6 space-y-6">
         <!-- Student Details Card -->
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center text-sm">
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
           <div>
-            <p class="text-gray-500">اسم الطالب:</p>
-            <h4 id="res-student-name" class="font-bold text-gray-800 text-base">---</h4>
-            <p id="res-student-section" class="text-xs text-gray-500">القسم: ---</p>
+            <p class="text-gray-500 font-bold">اسم الطالب:</p>
+            <h4 id="res-student-name" class="font-extrabold text-gray-800 text-base">---</h4>
+            <p id="res-student-section" class="text-gray-500 mt-0.5">القسم: ---</p>
           </div>
           <div class="text-left">
-            <p class="text-gray-500">تاريخ ووقت التقديم:</p>
-            <span id="res-timestamp" class="font-semibold text-gray-700 text-xs">---</span>
+            <p class="text-gray-500 font-bold">تاريخ ووقت التقديم:</p>
+            <span id="res-timestamp" class="font-semibold text-gray-700">---</span>
           </div>
         </div>
 
         <!-- Score Big Circle -->
-        <div class="text-center py-4 bg-blue-50 rounded-xl border border-blue-100">
-          <span class="text-gray-600 text-sm font-bold block mb-1">الدرجة الحاصل عليها</span>
+        <div class="text-center py-5 bg-blue-50/80 rounded-2xl border border-blue-100">
+          <span class="text-gray-600 text-xs font-bold block mb-1">الدرجة النهائية الحاصل عليها</span>
           <div class="flex items-center justify-center space-x-1 space-x-reverse">
             <span id="res-score" class="text-5xl font-black text-unrwa-blue">0</span>
             <span class="text-2xl font-bold text-gray-400">/ 30</span>
           </div>
-          <div id="res-badge" class="mt-3 inline-block px-4 py-1 rounded-full text-xs font-bold bg-green-200 text-green-800">
-            ممتاز - أداء مرتفع جداً
+          <div id="res-badge" class="mt-3 inline-block px-4 py-1 rounded-full text-xs font-black bg-emerald-200 text-emerald-800">
+            ممتاز - أداء متميز جداً
           </div>
         </div>
 
-        <!-- Correct Answers Detailed breakdown -->
+        <!-- Correct Answers Detailed Breakdown -->
         <div>
-          <h4 class="font-bold text-gray-800 mb-3 text-sm flex items-center">
-            <i class="fa-solid fa-list-check text-unrwa-blue ml-2"></i> نموذج ورقة التصحيح التفصيلية:
+          <h4 class="font-bold text-gray-800 mb-3 text-xs flex items-center gap-1.5">
+            <i class="fa-solid fa-list-check text-unrwa-blue"></i>
+            <span>كشف التفاصيل والتحليل الفوري للإجابات:</span>
           </h4>
           <div id="res-breakdown" class="space-y-2 text-xs">
             <!-- Dynamic Insertion -->
@@ -534,31 +689,32 @@
         </div>
 
         <div class="flex space-x-3 space-x-reverse pt-2">
-          <button onclick="window.print()" class="flex-1 py-2.5 bg-gray-800 text-white font-bold rounded-lg text-sm hover:bg-gray-900 transition flex items-center justify-center">
-            <i class="fa-solid fa-print ml-2"></i> طباعة التقرير
+          <button onclick="window.print()" class="flex-1 py-3 bg-gray-800 text-white font-bold rounded-xl text-xs hover:bg-gray-900 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-print"></i> طباعة كشف العلامة
           </button>
-          <button onclick="switchView('student-login')" class="flex-1 py-2.5 bg-unrwa-blue text-white font-bold rounded-lg text-sm hover:bg-unrwa-darkBlue transition flex items-center justify-center">
-            <i class="fa-solid fa-rotate-right ml-2"></i> تقديم اختبار آخر
+          <button onclick="switchView('student-login')" class="flex-1 py-3 bg-unrwa-blue text-white font-bold rounded-xl text-xs hover:bg-unrwa-darkBlue transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> تقديم اختبار جديد
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ==================== VIEW 4: TEACHER DASHBOARD (Password Protected) ==================== -->
+    <!-- ==================== VIEW 4: TEACHER DASHBOARD ==================== -->
     <section id="view-teacher-dashboard" class="hidden space-y-6">
       
       <!-- Top Stats Bar -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b pb-4 mb-4">
           <div>
-            <h2 class="text-2xl font-black text-unrwa-darkBlue flex items-center">
-              <i class="fa-solid fa-chart-line text-unrwa-blue ml-2"></i> لوحة تحكم المشرف والخدمات الرقمية للمعلم
+            <h2 class="text-2xl font-black text-unrwa-darkBlue flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-unrwa-blue"></i>
+              <span>لوحة التحكم والخدمات الرقمية للمشرف والمعلم</span>
             </h2>
             <p class="text-xs text-gray-500">إدارة الإجابات، تحليلات النتائج، وتوليد النماذج الورقية الأربعة</p>
           </div>
           <div class="flex items-center space-x-2 space-x-reverse">
             <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-bold">كلمة السر صحيحة (exam2618)</span>
-            <button onclick="clearAllResults()" class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-3 py-1 rounded-lg text-xs font-bold">
+            <button onclick="clearAllResults()" class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-3 py-1 rounded-xl text-xs font-bold transition">
               <i class="fa-solid fa-trash ml-1"></i> مسح السجلات
             </button>
           </div>
@@ -566,42 +722,42 @@
 
         <!-- Dashboard KPI Widgets -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-center">
-            <div class="bg-unrwa-blue text-white p-3 rounded-lg ml-3">
+          <div class="bg-blue-50/80 p-4 rounded-2xl border border-blue-100 flex items-center">
+            <div class="bg-unrwa-blue text-white p-3.5 rounded-xl ml-3 shadow">
               <i class="fa-solid fa-users text-xl"></i>
             </div>
             <div>
-              <span class="text-xs text-gray-500 font-bold block">إجمالي المتقدمين</span>
+              <span class="text-[11px] text-gray-500 font-bold block">إجمالي المتقدمين</span>
               <span id="stat-total" class="text-2xl font-black text-gray-800">0</span>
             </div>
           </div>
 
-          <div class="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center">
-            <div class="bg-green-600 text-white p-3 rounded-lg ml-3">
+          <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-100 flex items-center">
+            <div class="bg-emerald-600 text-white p-3.5 rounded-xl ml-3 shadow">
               <i class="fa-solid fa-square-poll-vertical text-xl"></i>
             </div>
             <div>
-              <span class="text-xs text-gray-500 font-bold block">متوسط العلامات</span>
+              <span class="text-[11px] text-gray-500 font-bold block">متوسط العلامات</span>
               <span id="stat-avg" class="text-2xl font-black text-gray-800">0 / 30</span>
             </div>
           </div>
 
-          <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 flex items-center">
-            <div class="bg-purple-600 text-white p-3 rounded-lg ml-3">
+          <div class="bg-purple-50/80 p-4 rounded-2xl border border-purple-100 flex items-center">
+            <div class="bg-purple-600 text-white p-3.5 rounded-xl ml-3 shadow">
               <i class="fa-solid fa-trophy text-xl"></i>
             </div>
             <div>
-              <span class="text-xs text-gray-500 font-bold block">أعلى علامة مسجلة</span>
+              <span class="text-[11px] text-gray-500 font-bold block">أعلى علامة مسجلة</span>
               <span id="stat-highest" class="text-2xl font-black text-gray-800">0</span>
             </div>
           </div>
 
-          <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 flex items-center">
-            <div class="bg-amber-600 text-white p-3 rounded-lg ml-3">
+          <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-100 flex items-center">
+            <div class="bg-amber-600 text-white p-3.5 rounded-xl ml-3 shadow">
               <i class="fa-solid fa-file-export text-xl"></i>
             </div>
             <div>
-              <span class="text-xs text-gray-500 font-bold block">النماذج المتاحة للطباعة</span>
+              <span class="text-[11px] text-gray-500 font-bold block">النماذج الورقية المتاحة</span>
               <span class="text-2xl font-black text-gray-800">4 نماذج</span>
             </div>
           </div>
@@ -609,46 +765,50 @@
       </div>
 
       <!-- Action Panel for Printing 4 Equivalence Forms -->
-      <div class="bg-gradient-to-r from-unrwa-darkBlue to-unrwa-blue p-6 rounded-xl shadow-lg text-white">
+      <div class="bg-gradient-to-r from-unrwa-darkBlue to-unrwa-blue p-6 rounded-2xl shadow-lg text-white">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h3 class="text-xl font-bold mb-1 flex items-center">
-              <i class="fa-solid fa-print ml-2"></i> طباعة النماذج الأربعة المتكافئة (ورقياً)
+            <h3 class="text-xl font-black mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-print text-yellow-300"></i>
+              <span>طباعة النماذج الورقية الأربعة المتكافئة (A, B, C, D)</span>
             </h3>
-            <p class="text-xs text-blue-100">قم باختيار أحد النماذج الاربعة المتكافئة والمصممة للطباعة الرسمية والمزودة برسوم توضيحية وتصميمات تعليمية.</p>
+            <p class="text-xs text-blue-100">
+              قم باختيار أحد النماذج الأربعة المصممة للطباعة الرسمية والمزودة برسوم توضيحية مستوحاة من الكتاب المدرسي.
+            </p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="printExamForm('A')" class="bg-white text-unrwa-darkBlue font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm shadow">
-              <i class="fa-solid fa-file-lines ml-1"></i> نموذج ( أ )
+            <button onclick="printExamForm('A')" class="bg-white text-unrwa-darkBlue font-black px-4 py-2.5 rounded-xl hover:bg-yellow-300 transition text-xs shadow flex items-center gap-1">
+              <i class="fa-solid fa-file-lines"></i> نموذج ( أ )
             </button>
-            <button onclick="printExamForm('B')" class="bg-white text-unrwa-darkBlue font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm shadow">
-              <i class="fa-solid fa-file-lines ml-1"></i> نموذج ( ب )
+            <button onclick="printExamForm('B')" class="bg-white text-unrwa-darkBlue font-black px-4 py-2.5 rounded-xl hover:bg-yellow-300 transition text-xs shadow flex items-center gap-1">
+              <i class="fa-solid fa-file-lines"></i> نموذج ( ب )
             </button>
-            <button onclick="printExamForm('C')" class="bg-white text-unrwa-darkBlue font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm shadow">
-              <i class="fa-solid fa-file-lines ml-1"></i> نموذج ( ج )
+            <button onclick="printExamForm('C')" class="bg-white text-unrwa-darkBlue font-black px-4 py-2.5 rounded-xl hover:bg-yellow-300 transition text-xs shadow flex items-center gap-1">
+              <i class="fa-solid fa-file-lines"></i> نموذج ( ج )
             </button>
-            <button onclick="printExamForm('D')" class="bg-white text-unrwa-darkBlue font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm shadow">
-              <i class="fa-solid fa-file-lines ml-1"></i> نموذج ( د )
+            <button onclick="printExamForm('D')" class="bg-white text-unrwa-darkBlue font-black px-4 py-2.5 rounded-xl hover:bg-yellow-300 transition text-xs shadow flex items-center gap-1">
+              <i class="fa-solid fa-file-lines"></i> نموذج ( د )
             </button>
           </div>
         </div>
       </div>
 
       <!-- Results Data Table -->
-      <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-        <div class="p-4 border-b flex justify-between items-center bg-gray-50">
-          <h3 class="font-bold text-gray-800 text-base flex items-center">
-            <i class="fa-solid fa-table ml-2 text-unrwa-blue"></i> كشف نتائج الطلاب والمقدمين رقمياً
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-4 border-b flex justify-between items-center bg-slate-50">
+          <h3 class="font-black text-gray-800 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-table text-unrwa-blue"></i>
+            <span>كشف نتائج الطلاب المتقدمين رقمياً</span>
           </h3>
-          <button onclick="exportResultsCSV()" class="text-xs bg-green-600 hover:bg-green-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
-            <i class="fa-solid fa-file-excel ml-1"></i> تصدير البيانات (Excel/CSV)
+          <button onclick="exportResultsCSV()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+            <i class="fa-solid fa-file-excel"></i> تصدير البيانات (Excel/CSV)
           </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-right border-collapse">
             <thead>
-              <tr class="bg-gray-100 text-gray-700 text-xs uppercase font-bold border-b">
+              <tr class="bg-slate-100 text-gray-700 text-xs uppercase font-extrabold border-b">
                 <th class="p-3">#</th>
                 <th class="p-3">اسم الطالب</th>
                 <th class="p-3">الصف/الشعبة</th>
@@ -658,7 +818,7 @@
                 <th class="p-3 text-center">الإجراءات</th>
               </tr>
             </thead>
-            <tbody id="teacher-results-table" class="divide-y divide-gray-100 text-sm">
+            <tbody id="teacher-results-table" class="divide-y divide-slate-100 text-xs">
               <!-- Dynamic Rows -->
             </tbody>
           </table>
@@ -670,26 +830,26 @@
 
   <!-- Auth Modal for Teacher -->
   <div id="modal-teacher-auth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 space-y-4 relative">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 space-y-4 relative">
       <button onclick="closeTeacherAuthModal()" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600">
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
 
       <div class="text-center">
-        <div class="inline-block bg-blue-100 text-unrwa-blue p-3 rounded-full mb-2">
+        <div class="inline-block bg-blue-100 text-unrwa-blue p-3.5 rounded-full mb-2">
           <i class="fa-solid fa-lock text-2xl"></i>
         </div>
-        <h3 class="text-xl font-bold text-gray-800">دخول المعلم / المشرف</h3>
-        <p class="text-xs text-gray-500">أدخل كلمة السر الخاصة للوصول للوحة النتائج والطباعة</p>
+        <h3 class="text-xl font-black text-gray-800">دخول المعلم / المشرف</h3>
+        <p class="text-xs text-gray-500 mt-1">أدخل كلمة المرور للوصول للوحة النتائج والطباعة</p>
       </div>
 
       <form onsubmit="verifyTeacherPassword(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">كلمة المرور:</label>
-          <input type="password" id="teacher-pass-input" required placeholder="أدخل كلمة السر" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-unrwa-blue focus:outline-none">
-          <span id="auth-error-msg" class="text-xs text-red-600 hidden mt-1 block font-semibold">كلمة السر غير صحيحة! حاول مجدداً.</span>
+          <input type="password" id="teacher-pass-input" required placeholder="أدخل كلمة المرور" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-unrwa-blue focus:outline-none font-bold">
+          <span id="auth-error-msg" class="text-xs text-red-600 hidden mt-1 block font-bold">كلمة المرور غير صحيحة! حاول مجدداً.</span>
         </div>
-        <button type="submit" class="w-full py-2.5 bg-unrwa-blue hover:bg-unrwa-darkBlue text-white font-bold rounded-lg transition text-sm">
+        <button type="submit" class="w-full py-3 bg-unrwa-blue hover:bg-unrwa-darkBlue text-white font-black rounded-xl transition text-sm">
           تأكيد الدخول
         </button>
       </form>
@@ -703,17 +863,18 @@
       <div class="text-right text-xs space-y-1">
         <p class="font-bold">وكالة الغوث الدولية (UNRWA)</p>
         <p>دائرة التربية والتعليم - إقليم الأردن</p>
-        <p>مدرسة: .......................................</p>
+        <p class="font-bold text-sm">مدرسة ذكور وادي السير الإعدادية</p>
+        <p class="text-gray-700">إعداد وتصميم المعلم: <strong>عامر كراجه</strong></p>
       </div>
       <div>
-        <h2 class="font-black text-xl">اختبار شهر أيلول/تشرين في الدراسات الاجتماعية</h2>
+        <h2 class="font-black text-xl">اختبار الدراسات الاجتماعية الشهري</h2>
         <p class="text-sm font-bold mt-1">الصف الخامس الأساسي - الفصل الدراسي الأول</p>
-        <span id="print-form-title" class="inline-block border border-black px-3 py-0.5 rounded font-bold text-sm mt-1">النموذج ( أ )</span>
+        <span id="print-form-title" class="inline-block border-2 border-black px-4 py-0.5 rounded-full font-black text-sm mt-1">النموذج ( أ )</span>
       </div>
       <div class="text-left text-xs space-y-1">
-        <p><strong>الزمن:</strong> 45 دقيقة</p>
+        <p><strong>الزمن:</strong> 40 دقيقة</p>
         <p><strong>الدرجة الكلية:</strong> 30 علامة</p>
-        <p><strong>المادة:</strong> ص 23 - 51</p>
+        <p><strong>المادة:</strong> الأردني</p>
       </div>
     </div>
 
@@ -732,7 +893,7 @@
 
     <!-- Signatures -->
     <div class="mt-12 flex justify-between text-xs font-bold pt-6 border-t border-gray-400">
-      <p>معلم المادة: ........................</p>
+      <p>معلم المادة: عامر كراجه</p>
       <p>المشرف التربوي: ........................</p>
       <p>مدير المدرسة: ........................</p>
     </div>
@@ -740,27 +901,25 @@
 
   <footer class="bg-gray-800 text-gray-400 text-xs py-4 no-print mt-8">
     <div class="max-w-7xl mx-auto px-4 text-center space-y-1">
-      <p>تم التصميم والتطوير وفقاً لمعايير UNRWA التربوية والرقمية | المادة المقررة: من صفحة 23 إلى 51</p>
+      <p>برنامج التربية والتعليم الرقمي - UNRWA | إعداد وتصميم المعلم: عامر كراجه</p>
       <p>جميع الحقوق محفوظة © 2026 - مادة الدراسات الاجتماعية للصف الخامس</p>
     </div>
   </footer>
 
   <script>
-    /* ==========================================================================
-       Global App State & Constants
-       ========================================================================== */
+    /* Global App State & Constants */
     const TEACHER_PASSWORD = "exam2618";
     let currentStudentData = null;
     let timerInterval = null;
     let examResultsList = JSON.parse(localStorage.getItem('unrwa_exam_results') || '[]');
 
-    // Answer Keys for Online Exam
+    // Correct Answer Keys for Online Exam
     const ANSWER_KEY = {
       mc_q1: 'B', // التكافل الاجتماعي
-      mc_q2: 'C', // جلالة الملك
-      mc_q3: 'B', // لمدرستي أنتمي
-      mc_q4: 'C', // مجلسي الأعيان والنواب
-      mc_q5: 'B', // الملك المصادقة
+      mc_q2: 'A', // التبرع بالحقائب والملابس والقرطاسية
+      mc_q3: 'C', // جلالة الملك
+      mc_q4: 'B', // لمدرستي أنتمي
+      mc_q5: 'C', // مجلسي الأعيان والنواب
       tf_q1: 'true',
       tf_q2: 'false', // القضائية هي المنوطة بإقامة العدل وليس التنفيذية
       tf_q3: 'true',
@@ -781,9 +940,7 @@
       case: 3  // 2 * 3 = 6  Total = 30 Marks
     };
 
-    /* ==========================================================================
-       Navigation & View Switching
-       ========================================================================== */
+    /* View Switching Functions */
     function switchView(viewName) {
       document.getElementById('view-student-login').classList.add('hidden');
       document.getElementById('view-student-exam').classList.add('hidden');
@@ -803,9 +960,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* ==========================================================================
-       Teacher Auth Modal
-       ========================================================================== */
+    /* Teacher Auth Handler */
     function openTeacherAuthModal() {
       document.getElementById('modal-teacher-auth').classList.remove('hidden');
       document.getElementById('teacher-pass-input').value = '';
@@ -827,9 +982,7 @@
       }
     }
 
-    /* ==========================================================================
-       Student Exam Logic
-       ========================================================================== */
+    /* Student Exam Timers & Handlers */
     function startStudentExam(e) {
       e.preventDefault();
       const name = document.getElementById('student-name').value.trim();
@@ -839,7 +992,7 @@
       currentStudentData = { name, section, id, startTime: new Date() };
 
       document.getElementById('display-student-name').innerText = name;
-      document.getElementById('display-student-section').innerText = section + ` | رقم القيد: ${id}`;
+      document.getElementById('display-student-section').innerText = section + ` | الرقم: ${id}`;
 
       switchView('student-exam');
       startExamTimer(25 * 60); // 25 Minutes Timer
@@ -879,9 +1032,9 @@
         const correctAns = ANSWER_KEY[qKey];
         if (userAns === correctAns) {
           score += QUESTION_WEIGHTS.mc;
-          breakdownHtml += `<div class="p-2 bg-green-50 text-green-800 rounded flex justify-between items-center"><span>السؤال الأول - فقرة ${i}: إجابة صحيحة</span><span class="font-bold">+${QUESTION_WEIGHTS.mc}</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-green-50 text-green-800 rounded-xl border border-green-200 flex justify-between items-center font-bold"><span>السؤال الأول - فقرة ${i}: إجابة صحيحة ✓</span><span class="bg-green-200 px-2 py-0.5 rounded-md text-xs">+${QUESTION_WEIGHTS.mc} علامة</span></div>`;
         } else {
-          breakdownHtml += `<div class="p-2 bg-red-50 text-red-800 rounded flex justify-between items-center"><span>السؤال الأول - فقرة ${i}: إجابة خاطئة (الصحيح: ${correctAns})</span><span class="font-bold">0</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-red-50 text-red-800 rounded-xl border border-red-200 flex justify-between items-center font-bold"><span>السؤال الأول - فقرة ${i}: إجابة خاطئة ✗</span><span class="bg-red-200 px-2 py-0.5 rounded-md text-xs">0 علامة</span></div>`;
         }
       }
 
@@ -892,9 +1045,9 @@
         const correctAns = ANSWER_KEY[qKey];
         if (userAns === correctAns) {
           score += QUESTION_WEIGHTS.tf;
-          breakdownHtml += `<div class="p-2 bg-green-50 text-green-800 rounded flex justify-between items-center"><span>السؤال الثاني - فقرة ${i}: إجابة صحيحة</span><span class="font-bold">+${QUESTION_WEIGHTS.tf}</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-green-50 text-green-800 rounded-xl border border-green-200 flex justify-between items-center font-bold"><span>السؤال الثاني - فقرة ${i}: إجابة صحيحة ✓</span><span class="bg-green-200 px-2 py-0.5 rounded-md text-xs">+${QUESTION_WEIGHTS.tf} علامة</span></div>`;
         } else {
-          breakdownHtml += `<div class="p-2 bg-red-50 text-red-800 rounded flex justify-between items-center"><span>السؤال الثاني - فقرة ${i}: إجابة خاطئة</span><span class="font-bold">0</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-red-50 text-red-800 rounded-xl border border-red-200 flex justify-between items-center font-bold"><span>السؤال الثاني - فقرة ${i}: إجابة خاطئة ✗</span><span class="bg-red-200 px-2 py-0.5 rounded-md text-xs">0 علامة</span></div>`;
         }
       }
 
@@ -905,9 +1058,9 @@
         const correctAns = ANSWER_KEY[qKey];
         if (userAns === correctAns) {
           score += QUESTION_WEIGHTS.match;
-          breakdownHtml += `<div class="p-2 bg-green-50 text-green-800 rounded flex justify-between items-center"><span>السؤال الثالث - مطابقة ${i}: إجابة صحيحة</span><span class="font-bold">+${QUESTION_WEIGHTS.match}</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-green-50 text-green-800 rounded-xl border border-green-200 flex justify-between items-center font-bold"><span>السؤال الثالث - مطابقة ${i}: إجابة صحيحة ✓</span><span class="bg-green-200 px-2 py-0.5 rounded-md text-xs">+${QUESTION_WEIGHTS.match} علامة</span></div>`;
         } else {
-          breakdownHtml += `<div class="p-2 bg-red-50 text-red-800 rounded flex justify-between items-center"><span>السؤال الثالث - مطابقة ${i}: إجابة خاطئة</span><span class="font-bold">0</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-red-50 text-red-800 rounded-xl border border-red-200 flex justify-between items-center font-bold"><span>السؤال الثالث - مطابقة ${i}: إجابة خاطئة ✗</span><span class="bg-red-200 px-2 py-0.5 rounded-md text-xs">0 علامة</span></div>`;
         }
       }
 
@@ -918,9 +1071,9 @@
         const correctAns = ANSWER_KEY[qKey];
         if (userAns === correctAns) {
           score += QUESTION_WEIGHTS.case;
-          breakdownHtml += `<div class="p-2 bg-green-50 text-green-800 rounded flex justify-between items-center"><span>السؤال الرابع - موقف ${i}: إجابة صحيحة</span><span class="font-bold">+${QUESTION_WEIGHTS.case}</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-green-50 text-green-800 rounded-xl border border-green-200 flex justify-between items-center font-bold"><span>السؤال الرابع - موقف ${i}: إجابة صحيحة ✓</span><span class="bg-green-200 px-2 py-0.5 rounded-md text-xs">+${QUESTION_WEIGHTS.case} علامة</span></div>`;
         } else {
-          breakdownHtml += `<div class="p-2 bg-red-50 text-red-800 rounded flex justify-between items-center"><span>السؤال الرابع - موقف ${i}: إجابة خاطئة</span><span class="font-bold">0</span></div>`;
+          breakdownHtml += `<div class="p-2.5 bg-red-50 text-red-800 rounded-xl border border-red-200 flex justify-between items-center font-bold"><span>السؤال الرابع - موقف ${i}: إجابة خاطئة ✗</span><span class="bg-red-200 px-2 py-0.5 rounded-md text-xs">0 علامة</span></div>`;
         }
       }
 
@@ -938,7 +1091,7 @@
 
       // Display Results Card
       document.getElementById('res-student-name').innerText = record.name;
-      document.getElementById('res-student-section').innerText = `الشعبة: ${record.section} | الرقم: ${record.studentId}`;
+      document.getElementById('res-student-section').innerText = `الشعبة: ${record.section} | الرقم المدرسي: ${record.studentId}`;
       document.getElementById('res-timestamp').innerText = record.timestamp;
       document.getElementById('res-score').innerText = score;
       document.getElementById('res-breakdown').innerHTML = breakdownHtml;
@@ -946,31 +1099,29 @@
       // Badge Grade Text
       const badge = document.getElementById('res-badge');
       if (score >= 27) {
-        badge.innerText = 'ممتاز جداً - أداء متميز';
-        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-bold bg-green-200 text-green-800';
+        badge.innerText = 'ممتاز جداً - أداء متميز ومبدع';
+        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-black bg-emerald-200 text-emerald-800';
       } else if (score >= 21) {
         badge.innerText = 'جيد جداً - أداء مرتفع';
-        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-bold bg-blue-200 text-blue-800';
+        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-black bg-blue-200 text-blue-800';
       } else if (score >= 15) {
         badge.innerText = 'جيد - اجتاز الاختبار بنجاح';
-        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-bold bg-yellow-200 text-yellow-800';
+        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-black bg-yellow-200 text-yellow-800';
       } else {
-        badge.innerText = 'يحتاج إلى متابعة وتدعيم';
-        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-bold bg-red-200 text-red-800';
+        badge.innerText = 'يحتاج إلى متابعة وتدعيم دراسي';
+        badge.className = 'mt-3 inline-block px-4 py-1 rounded-full text-xs font-black bg-red-200 text-red-800';
       }
 
       switchView('student-result');
     }
 
-    /* ==========================================================================
-       Teacher Dashboard Logic & Analytics
-       ========================================================================== */
+    /* Teacher Dashboard Analytics Functions */
     function renderTeacherDashboard() {
       const tbody = document.getElementById('teacher-results-table');
       tbody.innerHTML = '';
 
       if (examResultsList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">لا توجد نتائج مسجلة حتى الآن.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400 font-bold">لا توجد نتائج طلاب مسجلة حتى الآن.</td></tr>`;
         document.getElementById('stat-total').innerText = '0';
         document.getElementById('stat-avg').innerText = '0 / 30';
         document.getElementById('stat-highest').innerText = '0';
@@ -984,27 +1135,27 @@
         totalScore += item.score;
         if (item.score > maxScore) maxScore = item.score;
 
-        let ratingClass = 'bg-green-100 text-green-800';
+        let ratingClass = 'bg-emerald-100 text-emerald-800';
         let ratingText = 'ممتاز';
         if (item.score < 15) {
           ratingClass = 'bg-red-100 text-red-800';
           ratingText = 'ضعيف';
         } else if (item.score < 21) {
-          ratingClass = 'bg-yellow-100 text-yellow-800';
+          ratingClass = 'bg-amber-100 text-amber-800';
           ratingText = 'جيد';
         }
 
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-gray-50';
+        tr.className = 'hover:bg-slate-50 transition';
         tr.innerHTML = `
           <td class="p-3 font-bold text-gray-500">${index + 1}</td>
-          <td class="p-3 font-bold text-gray-800">${item.name}</td>
-          <td class="p-3 text-gray-600 text-xs">${item.section}</td>
-          <td class="p-3 text-gray-500 text-xs">${item.timestamp}</td>
-          <td class="p-3 text-center font-black text-unrwa-blue text-base">${item.score}</td>
-          <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${ratingClass}">${ratingText}</span></td>
+          <td class="p-3 font-extrabold text-gray-800">${item.name}</td>
+          <td class="p-3 text-gray-600 font-bold">${item.section}</td>
+          <td class="p-3 text-gray-500">${item.timestamp}</td>
+          <td class="p-3 text-center font-black text-unrwa-blue text-sm">${item.score}</td>
+          <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-[11px] font-black ${ratingClass}">${ratingText}</span></td>
           <td class="p-3 text-center">
-            <button onclick="deleteSingleResult(${item.id})" class="text-red-500 hover:text-red-700 p-1">
+            <button onclick="deleteSingleResult(${item.id})" class="text-red-500 hover:text-red-700 p-1.5 transition">
               <i class="fa-solid fa-trash"></i>
             </button>
           </td>
@@ -1012,7 +1163,6 @@
         tbody.appendChild(tr);
       });
 
-      // Update KPIs
       document.getElementById('stat-total').innerText = examResultsList.length;
       document.getElementById('stat-avg').innerText = (totalScore / examResultsList.length).toFixed(1) + ' / 30';
       document.getElementById('stat-highest').innerText = maxScore + ' / 30';
@@ -1025,7 +1175,7 @@
     }
 
     function clearAllResults() {
-      if (confirm('هل أنت تأكد من مسح جميع سجلات الطلاب الحالية؟')) {
+      if (confirm('هل أنت متأكد من مسح جميع سجلات الطلاب الحالية؟')) {
         examResultsList = [];
         localStorage.removeItem('unrwa_exam_results');
         renderTeacherDashboard();
@@ -1053,69 +1203,95 @@
       document.body.removeChild(link);
     }
 
-    /* ==========================================================================
-       Printable 4 Equivalent Exam Forms Generator (A, B, C, D)
-       ========================================================================== */
+    /* Generator for Printable 4 Equivalent Exam Forms A, B, C, D */
     const FORM_DATA = {
       'A': {
-        title: 'النموذج ( أ ) - رسمي رقمي',
+        title: 'النموذج ( أ ) - مطور برسام رسمية',
         q1: [
-          '1. المفهوم الذي يُعبر عن التعاون بين أفراد المجتمع بحيث يساعد الغني الفقير ويعطف الكبير على الصغير هو: (أ. المشاركة / ب. التكافل الاجتماعي / ج. المواطنة)',
-          '2. رأس الدولة الأردنية والقائد الأعلى للقوات المسلحة هو: (أ. رئيس الوزراء / ب. رئيس مجلس النواب / ج. جلالة الملك)',
-          '3. تسمى السلطة المسؤولة عن تشريع القوانين واقتراحها بـ: (أ. السلطة التنفيذية / ب. السلطة التشريعية / ج. السلطة القضائية)',
-          '4. المبادرة التي أطلقت عام 2023 لتحسين البيئة المدرسية ونظافتها هي: (أ. مدرستي / ب. لمدرستي أنتمي / ج. بيئتي الأجمل)'
+          '1. المفهوم الاجتماعي الذي يعني "تعاون أفراد المجتمع بحيث يساعد الغني الفقير ويعطف الكبير على الصغير" هو: ( أ. التنافس التجاري / ب. التكافل الاجتماعي / ج. التصويت النيابي )',
+          '2. رأس الدولة الأردنية والقائد الأعلى للقوات المسلحة بحسب الدستور هو: ( أ. رئيس الوزراء / ب. رئيس مجلس النواب / ج. جلالة الملك )',
+          '3. تُسمى السلطة المسؤولة عن تشريع القوانين واقتراحها ومراقبة أداء الحكومة بـ: ( أ. السلطة التنفيذية / ب. السلطة التشريعية / ج. السلطة القضائية )',
+          '4. المبادرة التي أطلقتها وزارة التربية عام 2023م لتعزيز النظافة المدرسية هي: ( أ. مدرستي / ب. لمدرستي أنتمي / ج. بيئتي الأجمل )'
         ],
         q2: [
-          '1. ( &nbsp; ) يمثل مجلس الأمة في الأردن كلاً من مجلس الأعيان ومجلس النواب.',
-          '2. ( &nbsp; ) العمل التطوعي يكون مقابل أجر مادي مرتفع.',
-          '3. ( &nbsp; ) يبدأ التكافل الاجتماعي أولاً من بيئة المدرسة ثم الأسرة.'
+          '1. ( &nbsp; ) يبدأ التكافل الاجتماعي أساساً من نطاق الأسرة من خلال إنفاق الوالدين ورعاية الأطفال.',
+          '2. ( &nbsp; ) يتكون مجلس الأمة في المملكة الأردنية الهاشمية من مجلس الأعيان ومجلس النواب.',
+          '3. ( &nbsp; ) يُعد العمل التطوعي جهداً مدفوع الأجر المالي المرتفع.'
         ],
-        graphic: '🎨 [رسم توضيحي مصاحب: شجرة التكافل الاجتماعي وأدوار الأسرة والحي]'
+        graphic: `
+          <div class="p-3 border border-gray-400 rounded-xl bg-slate-50 flex items-center justify-around my-2">
+            <svg class="w-20 h-14" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#0072BC"/><path d="M30 60C30 50 40 42 50 42C60 42 70 50 70 60" stroke="#FFF" stroke-width="4"/><circle cx="50" cy="30" r="10" fill="#FFD700"/></svg>
+            <div class="text-right text-xs">
+              <span class="font-bold text-gray-800 block">[رسم توضيحي 1: شجرة التكافل الاجتماعي المأخوذة من ص 23-24]</span>
+              <span class="text-gray-600">تجسيد التضامن والمساعدة بين الغني والفقير والأسرة والمدرسة</span>
+            </div>
+          </div>`
       },
       'B': {
-        title: 'النموذج ( ب ) - رسمي رقمي',
+        title: 'النموذج ( ب ) - مطور برسام رسمية',
         q1: [
-          '1. يتكون مجلس الأمة في المملكة الأردنية الهاشمية من: (أ. مجلس الوزراء والبلديات / ب. مجلس الأعيان ومجلس النواب / ج. المحاكم والمجالس التنفيذية)',
-          '2. من صور التكافل الاجتماعي داخل المدرسة: (أ. كفالة الأيتام / ب. التبرع بالحقائب والقرطاسية للطلبة المحتاجين / ج. التقديم للانتخابات النيابية)',
-          '3. السلطة المناط بها تطبيق القوانين وإدارة شؤون الدولة هي: (أ. السلطة التنفيذية / ب. السلطة القضائية / ج. السلطة التشريعية)',
-          '4. الجهة الدستورية التي تمنح المصادقة النهائية على القوانين هي: (أ. رئيس مجلس الأعيان / ب. جلالة الملك / ج. رئيس المحكمة)'
+          '1. يتكون مجلس الأمة في المملكة الأردنية الهاشمية من: ( أ. مجلس الوزراء والبلديات / ب. مجلس الأعيان ومجلس النواب / ج. المحاكم والمجالس التنفيذية )',
+          '2. من صور التكافل الاجتماعي والمساعدة داخل المدرسة: ( أ. التبرع بالحقائب والملابس للطلبة المحتاجين / ب. بيع الألعاب / ج. تأجير الغرف المدرسية )',
+          '3. السلطة المناط بها إدارة شؤون الدولة وتطبيق القوانين بـ: ( أ. السلطة التنفيذية / ب. السلطة القضائية / ج. السلطة التشريعية )',
+          '4. الجهة الدستورية التي تمنح المصادقة النهائية السامية لإصدار القوانين هي: ( أ. رئيس مجلس الأعيان / ب. جلالة الملك / ج. رئيس المحكمة )'
         ],
         q2: [
-          '1. ( &nbsp; ) تُعين الإرادة الملكية رئيس الوزراء والوزراء وتثبت استقالتهم.',
-          '2. ( &nbsp; ) تهدف مبادرة "لمدرستي أنتمي" للحد من السلوكات الخطرة وتعزيز النظافة البيئية.',
-          '3. ( &nbsp; ) السلطة القضائية هي سلطة غير مستقلة وتتبع للوزارات مباشرة.'
+          '1. ( &nbsp; ) تعين الإرادة الملكية السامية رئيس الوزراء والوزراء وتثبت استقالتهم وفق أحكام الدستور.',
+          '2. ( &nbsp; ) تهدف مبادرة "لمدرستي أنتمي" إلى تحسين البيئة المدرسية وتعزيز سلوكيات النظافة والبيئة.',
+          '3. ( &nbsp; ) السلطة القضائية في المملكة سلطة غير مستقلة وتتبع للوزارات مباشرة.'
         ],
-        graphic: '🏛️ [رسم توضيحي مصاحب: مخطط الهيكل الدستوري والسلطات الثلاث بالأردن]'
+        graphic: `
+          <div class="p-3 border border-gray-400 rounded-xl bg-slate-50 flex items-center justify-around my-2">
+            <svg class="w-20 h-14" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="5" fill="#007A3D"/><path d="M20 40H80 M20 60H80" stroke="#FFF" stroke-width="3"/></svg>
+            <div class="text-right text-xs">
+              <span class="font-bold text-gray-800 block">[رسم توضيحي 2: الهيكل الدستوري للسلطات الثلاث ص 34-46]</span>
+              <span class="text-gray-600">التشريعية والتنفيذية والقضائية برئاسة جلالة الملك</span>
+            </div>
+          </div>`
       },
       'C': {
-        title: 'النموذج ( ج ) - رسمي رقمي',
+        title: 'النموذج ( ج ) - مطور برسام رسمية',
         q1: [
-          '1. يُعد قضاء الجار حاجيات جاره وتفقده في الأزمات شكلاً من أشكال التكافل في: (أ. الأسرة / ب. الحي والمجتمع / ج. المدرسي)',
-          '2. تُعرف الجهد الذي يبذله الفرد لخدمة مجتمعه بدون مقابل بـ: (أ. الوظيفة / ب. العمل التطوعي / ج. الاستثمار)',
-          '3. السلطة التي تتولى المحاكم بمختلف أنواعها إقامة العدل وتطبيق القوانين من خلالها هي: (أ. القضائية / ب. التنفيذية / ج. التشريعية)',
-          '4. قائد القوات المسلحة الأردنية والأجهزة الأمنية بحسب الدستور هو: (أ. وزير الدفاع / ب. الملك / ج. رئيس مجلس النواب)'
+          '1. يُعد قضاء الجار حاجات جاره وتفقده في الظروف الصعبة شكلاً من أشكال التكافل في: ( أ. الأسرة / ب. الحي والمجتمع / ج. المدرسة )',
+          '2. يُعرف الجهد الذي يبذله الفرد لخدمة مجتمعه بدون مقابل مادي بـ: ( أ. الوظيفة / ب. العمل التطوعي / ج. الاستثمار والتجارة )',
+          '3. السلطة التي تتولى المحاكم المستقلة إقامة العدل وحماية الحقوق من خلالها هي: ( أ. السلطة القضائية / ب. السلطة التنفيذية / ج. السلطة التشريعية )',
+          '4. القائد الأعلى للقوات المسلحة والأجهزة الأمنية بحسب الدستور الأردني هو: ( أ. وزير الدفاع / ب. جلالة الملك / ج. رئيس مجلس النواب )'
         ],
         q2: [
-          '1. ( &nbsp; ) يبدأ التكافل الاجتماعي أساساً داخل نطاق الأسرة برعاية الأولاد والإنفاق عليهم.',
-          '2. ( &nbsp; ) يتكون مجلس الأعيان في الأردن عن طريق الانتخاب المباشر من الشعب.',
-          '3. ( &nbsp; ) المشاركة في الإذاعة المدرسية تُعزز مهارات التواصل المجتمعي لدى الطالب.'
+          '1. ( &nbsp; ) يبدأ التكافل الاجتماعي في المجتمع من نطاق الأسرة أولاً ثم الحي والمدرسة.',
+          '2. ( &nbsp; ) يتم اختيار أعضاء مجلس النواب عن طريق الانتخاب المباشر من الشعب الأردني.',
+          '3. ( &nbsp; ) حماية الأثاث المدرسية والحديقة يُعد جزءاً من غرس المواطنة الفاعلة.'
         ],
-        graphic: '🤝 [رسم توضيحي مصاحب: قصة مساعدة زملاء الطالبة فرح وأبعادها]'
+        graphic: `
+          <div class="p-3 border border-gray-400 rounded-xl bg-slate-50 flex items-center justify-around my-2">
+            <svg class="w-20 h-14" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#FEF3C7" stroke="#D4AF37" stroke-width="3"/><path d="M35 50L45 60L65 40" stroke="#007A3D" stroke-width="4"/></svg>
+            <div class="text-right text-xs">
+              <span class="font-bold text-gray-800 block">[رسم توضيحي 3: حالة وقصة مساعدة الزميلة فرح ص 24 من الكتاب]</span>
+              <span class="text-gray-600">التعاون المادي والنفسي والاجتماعي بين التلامذة</span>
+            </div>
+          </div>`
       },
       'D': {
-        title: 'النموذج ( د ) - رسمي رقمي',
+        title: 'النموذج ( د ) - مطور برسام رسمية',
         q1: [
-          '1. من الأمثلة على التكافل الأسري: (أ. تنظيف الشوارع العامة / ب. إنفاق الوالدين ورعاية الأطفال وتأمين الاحتياجات / ج. تشريع القوانين)',
-          '2. الهيئة الدستورية التي تنتخب من قبل الشعب الأردني مباشرة هي: (أ. مجلس الأعيان / ب. مجلس النواب / ج. مجلس الوزراء)',
-          '3. من مجالات العمل التطوعي في البيئة العامة: (أ. حملات النظافة وزراعة الأشجار / ب. تداول الأسهم / ج. إصدار الأحكام القضائية)',
-          '4. تصدر الأحكام القضائية في محاكم المملكة باسم: (أ. رئيس الوزراء / ب. الملك / ج. الشعب)'
+          '1. من الأجوبة المباشرة للتكافل الأسري: ( أ. تنظيف الطرق العامة / ب. إنفاق الوالدين ورعاية الأطفال وتأمين حاجاتهم / ج. سن القوانين )',
+          '2. الهيئة الدستورية التي تنتخب مباشرة من قبل الشعب الأردني هي: ( أ. مجلس الأعيان / ب. مجلس النواب / ج. مجلس الوزراء )',
+          '3. من مجالات العمل التطوعي في المدرسة والمحيط المجتمعي: ( أ. حملات النظافة وزراعة الأشجار / ب. بيع الأسهم / ج. إصدار الأحكام القضائية )',
+          '4. تُصدر الأحكام القضائية في كافة محاكم المملكة الهاشمية باسم: ( أ. رئيس الوزراء / ب. الملك / ج. الشعب )'
         ],
         q2: [
-          '1. ( &nbsp; ) التكافل الاجتماعي يسهم في بناء الثقة بالنفس وتماسك المجتمع وحدته.',
-          '2. ( &nbsp; ) السلطة التشريعية هي المسؤولة عن وضع الموازنة العامة وتمريرها.',
-          '3. ( &nbsp; ) تعزيز قيم الانتماء والقيادة يعد من الثمار المباشرة لخدمة المجتمع.'
+          '1. ( &nbsp; ) التكافل الاجتماعي يسهم في تعزيز وحدة المجتمع وتماسكه والمحبة بين أفراده.',
+          '2. ( &nbsp; ) يتولى مجلس الوزراء مهمة إعداد مشروع الموازنة العامة للدولة.',
+          '3. ( &nbsp; ) تعزيز قيم القيادة والانتماء يعد من أسمى نتائج خدمة المجتمع والعمل التطوعي.'
         ],
-        graphic: '👑 [رسم توضيحي مصاحب: رموز صلاحيات الملك الدستورية والسلطات الأردنية]'
+        graphic: `
+          <div class="p-3 border border-gray-400 rounded-xl bg-slate-50 flex items-center justify-around my-2">
+            <svg class="w-20 h-14" viewBox="0 0 100 100"><polygon points="50,15 90,85 10,85" fill="#E6F2F9" stroke="#0072BC" stroke-width="3"/><circle cx="50" cy="60" r="10" fill="#CE1126"/></svg>
+            <div class="text-right text-xs">
+              <span class="font-bold text-gray-800 block">[رسم توضيحي 4: السلطة والمؤسسات الأردنية ص 34-46]</span>
+              <span class="text-gray-600">المؤسسات الدستورية والصلاحيات السامية في الأردن</span>
+            </div>
+          </div>`
       }
     };
 
@@ -1124,33 +1300,31 @@
       document.getElementById('print-form-title').innerText = form.title;
 
       let html = `
-        <div class="border p-3 rounded bg-gray-50 mb-4 font-bold text-center">
-          ${form.graphic}
-        </div>
+        ${form.graphic}
 
-        <div class="space-y-3">
-          <h4 class="font-bold border-b pb-1">السؤال الأول: اختر الإجابة الصحيحة من بين القوسين (10 علامات):</h4>
+        <div class="space-y-3 pt-2">
+          <h4 class="font-bold border-b pb-1">السؤال الأول: اختر الإجابة الصحيحة مما بين القوسين (10 علامات):</h4>
           <ol class="list-decimal list-inside space-y-2 pr-2">
-            ${form.q1.map(q => `<li class="py-1">${q}</li>`).join('')}
+            ${form.q1.map(q => `<li class="py-1 leading-relaxed">${q}</li>`).join('')}
           </ol>
         </div>
 
-        <div class="space-y-3 pt-4">
-          <h4 class="font-bold border-b pb-1">السؤال الثاني: ضع إشارة (✓) أو إشارة (✗) أمام العبارات التالية (10 علامات):</h4>
+        <div class="space-y-3 pt-3">
+          <h4 class="font-bold border-b pb-1">السؤال الثاني: ضع إشارة (✓) أمام العبارة الصحيحة وإشارة (✗) أمام العبارة الخاطئة (10 علامات):</h4>
           <ol class="list-decimal list-inside space-y-2 pr-2">
-            ${form.q2.map(q => `<li class="py-1">${q}</li>`).join('')}
+            ${form.q2.map(q => `<li class="py-1 leading-relaxed">${q}</li>`).join('')}
           </ol>
         </div>
 
-        <div class="space-y-3 pt-4">
-          <h4 class="font-bold border-b pb-1">السؤال الثالث: سؤال تطبيقي تحليلي مقتبس من الكتاب (10 علامات):</h4>
-          <p class="text-xs leading-relaxed border p-3 rounded">
-            "شاهدت أحداث الموقف الذي شارك فيه طلبة الصف الخامس لمساعدة زميلتهم فرح ووالدها المريض، بالإضافة لدراستك لمفهوم الملك والدستور والمؤسسات الدستورية الثلاث في الأردن (التشريعية، التنفيذية، القضائية)."
+        <div class="space-y-3 pt-3">
+          <h4 class="font-bold border-b pb-1">السؤال الثالث: سؤال تطبيقي تحليلي مقتبس من كتاب الاجتماعيات (10 علامات):</h4>
+          <p class="text-xs leading-relaxed border p-3 rounded bg-gray-50 font-bold">
+            "من خلال دراستك لموضوعات التكافل الاجتماعي ومبادرات المدرسة ومؤسسات السلطة في المملكة الأردنية الهاشمية:"
           </p>
-          <p class="pt-2">أ) اكتب صورتين من صور التكافل الاجتماعي في حيك أو مدرستك:</p>
+          <p class="pt-2 font-bold">أ) اذكر صورتين من صور التكافل الاجتماعي والتبرع والمساعدة داخل المدرسة أو الحي:</p>
           <p class="py-1 text-gray-400">1. ..........................................................................................................................................</p>
           <p class="py-1 text-gray-400">2. ..........................................................................................................................................</p>
-          <p class="pt-2">ب) اذكر وظيفة دستورية رئيسية واحدة لكل من السلطة التشريعية والسلطة التنفيذية:</p>
+          <p class="pt-2 font-bold">ب) اذكر وظيفة دستورية رئيسية واحدة لكل من السلطة التشريعية والسلطة التنفيذية:</p>
           <p class="py-1 text-gray-400">1. السلطة التشريعية: ....................................................................................................................</p>
           <p class="py-1 text-gray-400">2. السلطة التنفيذية: ....................................................................................................................</p>
         </div>
@@ -1160,7 +1334,7 @@
       window.print();
     }
 
-    /* Initialize Application */
+    /* Init Default View */
     window.onload = function() {
       switchView('student-login');
     };
